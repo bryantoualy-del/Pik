@@ -1,12 +1,12 @@
 (()=>{
 const svg=`<svg viewBox="0 0 72 72" role="img" aria-label="Emblème médical de Pik" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="pg" cx="35%" cy="28%"><stop offset="0" stop-color="#244c37"/><stop offset="1" stop-color="#0b1a12"/></radialGradient><filter id="ps"><feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#4fd28a" flood-opacity=".55"/></filter></defs><circle cx="36" cy="36" r="30" fill="url(#pg)" stroke="#f4f7f2" stroke-width="3"/><circle cx="36" cy="36" r="24" fill="none" stroke="#4fd28a" stroke-width="1.5" opacity=".65"/><path d="M31 18h10v13h13v10H41v13H31V41H18V31h13z" fill="#ed5c61" stroke="#fff" stroke-width="1.5" filter="url(#ps)"/><path d="M20 57c7-5 13-6 20-3 4 2 8 2 12 0" fill="none" stroke="#4fd28a" stroke-width="2" stroke-linecap="round"/><path d="M23 54c2-6 6-9 12-10" fill="none" stroke="#8ee7b8" stroke-width="1.6" stroke-linecap="round"/></svg>`;
 const style=document.createElement('style');style.textContent=`
-.top{gap:7px!important;grid-template-columns:minmax(230px,.82fr) minmax(0,2.18fr)!important;align-items:stretch!important}
+.top{gap:7px!important;grid-template-columns:minmax(250px,.9fr) minmax(0,2.1fr)!important;align-items:stretch!important}
 .identity{padding:9px 94px 9px 12px!important;min-height:0!important}
 .identity:after{content:none!important}
 .identity .eyebrow,.identity h1,.identity p,.identity .tag{position:relative;z-index:2;max-width:100%!important}
 .identity h1{font-size:clamp(1.5rem,2.6vw,2.15rem)!important;margin:.08rem 0 .2rem!important;line-height:.96!important}
-.identity p{font-size:.75rem!important;line-height:1.22!important}
+.identity p{font-size:.75rem!important;line-height:1.22!important;white-space:nowrap!important}
 .identity .tag{margin-top:4px!important;padding:2px 6px!important;font-size:.66rem!important}
 .signature-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:64px;height:64px;opacity:.9;filter:drop-shadow(0 0 14px #4fd28a2d);pointer-events:none;z-index:1}
 .signature-icon svg{width:100%;height:100%;display:block}
@@ -24,7 +24,7 @@ const style=document.createElement('style');style.textContent=`
   .top{display:block!important}
   .identity{padding:9px 78px 9px 11px!important}
   .identity h1{font-size:1.46rem!important}
-  .identity p{font-size:.73rem!important}
+  .identity p{font-size:.73rem!important;white-space:normal!important}
   .signature-icon{width:56px;height:56px;right:9px;top:50%}
   .vitals{grid-template-columns:repeat(3,1fr)!important;padding:5px!important;gap:4px!important}
   .vitals>.hpstat{grid-column:1/-1!important;display:grid!important;grid-template-columns:auto 1fr auto!important;padding:5px!important}
@@ -32,10 +32,10 @@ const style=document.createElement('style');style.textContent=`
   .vitals>.stat{padding:5px!important}
 }
 @media(min-width:768px) and (max-width:1366px){
-  .top{grid-template-columns:minmax(220px,.72fr) minmax(0,2.28fr)!important;gap:6px!important}
+  .top{grid-template-columns:minmax(245px,.8fr) minmax(0,2.2fr)!important;gap:6px!important}
   .identity{padding:8px 92px 8px 11px!important}
   .identity h1{font-size:clamp(1.45rem,2.25vw,1.95rem)!important}
-  .identity p{font-size:.72rem!important}
+  .identity p{font-size:.72rem!important;white-space:nowrap!important}
   .signature-icon{width:64px;height:64px;right:10px;top:50%}
   .vitals{grid-template-columns:minmax(235px,1.68fr) repeat(6,minmax(52px,.58fr))!important;padding:5px!important;gap:4px!important}
   .vitals>.stat{padding:4px 5px!important}
