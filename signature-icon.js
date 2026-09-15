@@ -33,18 +33,21 @@ const style=document.createElement('style');style.textContent=`
 }
 @media(min-width:768px) and (max-width:1024px){
   .top{display:grid!important;grid-template-columns:1fr!important;gap:5px!important}
-  .identity{padding:7px 82px 7px 11px!important;min-height:62px!important}
-  .identity h1{font-size:1.55rem!important;margin:.04rem 0 .12rem!important}
-  .identity p{font-size:.7rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
-  .identity .tag{margin-top:2px!important;padding:1px 6px!important;font-size:.62rem!important}
-  .signature-icon{width:54px;height:54px;right:12px;top:50%}
-  .vitals{grid-template-columns:minmax(220px,1.55fr) repeat(6,minmax(48px,.55fr))!important;padding:4px!important;gap:3px!important}
-  .vitals>.stat{padding:4px 5px!important}
-  .vitals>.stat b{font-size:.9rem!important}
-  .vitals>.stat small{font-size:.46rem!important}
-  .vitals>.hpstat{grid-template-columns:auto minmax(132px,1fr) auto!important;column-gap:4px!important}
-  .vitals .num{height:27px!important;min-height:27px!important;padding:3px 4px!important;font-size:.76rem!important}
-  .vitals .mini{height:27px!important;min-height:27px!important;padding:3px 4px!important;font-size:.6rem!important}
+  .identity{padding:7px 76px 7px 11px!important;min-height:58px!important}
+  .identity h1{font-size:1.5rem!important;margin:.04rem 0 .12rem!important}
+  .identity p{font-size:.69rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;padding-right:4px!important}
+  .identity .tag{margin-top:2px!important;padding:1px 6px!important;font-size:.61rem!important}
+  .signature-icon{width:48px;height:48px;right:11px;top:50%;z-index:1!important}
+  .vitals{grid-template-columns:repeat(6,minmax(0,1fr))!important;grid-auto-rows:minmax(0,auto)!important;padding:4px!important;gap:3px!important;overflow:hidden!important}
+  .vitals>.hpstat{grid-column:1/-1!important;grid-row:1!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;column-gap:5px!important;padding:4px 5px!important;min-width:0!important}
+  .vitals>.hpstat>small{grid-column:1!important;grid-row:1!important}
+  .vitals .hpbox{grid-column:2!important;grid-row:1!important;display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:3px!important;min-width:0!important}
+  .vitals .hp-actions{grid-column:3!important;grid-row:1!important;display:flex!important;gap:3px!important;min-width:0!important}
+  .vitals>.stat:not(.hpstat){grid-row:2!important;grid-column:auto!important;min-width:0!important;padding:4px!important;text-align:center!important}
+  .vitals>.stat b{font-size:.88rem!important}
+  .vitals>.stat small{font-size:.45rem!important}
+  .vitals .num{height:25px!important;min-height:25px!important;padding:2px 3px!important;font-size:.73rem!important;min-width:0!important;width:100%!important}
+  .vitals .mini{height:25px!important;min-height:25px!important;padding:2px 4px!important;font-size:.58rem!important}
 }
 @media(min-width:1025px) and (max-width:1366px){
   .top{grid-template-columns:minmax(255px,.84fr) minmax(0,2.16fr)!important;gap:6px!important}
