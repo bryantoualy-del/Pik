@@ -17,7 +17,7 @@ html,body{margin:0;min-height:100%;background:#07100c;color:#f4f7f2;font-family:
     const base='https://raw.githubusercontent.com/bryantoualy-del/Pik/9b36eebfd2cb215293fb1a067b0ea80e0d7dae82/index.html';
     let html=await (await fetch(base,{cache:'no-store'})).text();
     html=html.replace('<meta name="theme-color" content="#0d1110">','<meta name="theme-color" content="#07140f">');
-    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=3"><link rel="stylesheet" href="medical-fx.css?v=3"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=4"><link rel="stylesheet" href="medical-fx.css?v=3"></head>');
     html=html.replace('</body>','<script src="medical-fx.js?v=3"><\/script><script src="signature-icon.js?v=14"><\/script></body>');
     document.open();document.write(html);document.close();
   }catch(e){
