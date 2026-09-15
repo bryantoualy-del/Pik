@@ -29,5 +29,20 @@ if(!mountQuickSlots()){const qsObserver=new MutationObserver(()=>{if(mountQuickS
 /* combat-damage-only */
 const mountCombatDamageOnly=()=>{const grid=document.getElementById('combatGrid');if(!grid)return false;const prune=()=>{[...grid.querySelectorAll('.card h2')].forEach(h=>{if(h.textContent.trim()==='Urgences & soutien'||h.textContent.trim()==='Canalisation')h.closest('.card')?.remove()});const navCombat=document.querySelector('.nav button[data-go="combat"]');if(navCombat)navCombat.textContent='Combat & dégâts'};new MutationObserver(prune).observe(grid,{childList:true,subtree:true});prune();return true};if(!mountCombatDamageOnly()){const cdObserver=new MutationObserver(()=>{if(mountCombatDamageOnly())cdObserver.disconnect()});cdObserver.observe(document.documentElement,{childList:true,subtree:true})}
 
+
+/* pik-combat-controls-v2 */
+const combatControlsStyle=document.createElement('style');combatControlsStyle.textContent=`
+.combat-options-card{background:linear-gradient(135deg,#141d19,#101713)!important}.combat-options-card .options{margin-bottom:0}.blessed-auto{border-color:#4fa873!important;box-shadow:0 0 15px #4fd28a25;color:#bdf2d2!important}.new-combat-turn{white-space:nowrap}.ribbon-undo{right:40px!important;top:7px!important;width:auto!important;height:auto!important;border:1px solid #596d64!important;border-radius:8px!important;background:#17231f!important;padding:4px 8px!important;font-size:.72rem!important}
+@media(min-width:1101px){.turnbar{grid-template-columns:auto repeat(4,minmax(64px,1fr)) minmax(88px,.8fr) minmax(108px,.95fr) auto auto auto auto!important}}
+@media(max-width:767px){.new-combat-turn{grid-column:span 2}.result-ribbon{padding-right:112px!important}}
+`;document.head.appendChild(combatControlsStyle);
+const mountPikCombatControls=()=>{const grid=document.getElementById('combatGrid'),bar=document.querySelector('.turnbar'),ribbon=document.getElementById('resultRibbon');if(!grid||!bar||!ribbon)return false;
+ const reshape=()=>{const title=[...grid.querySelectorAll('.card h2')].find(h=>h.textContent.trim()==='État tactique');if(!title)return;const card=title.closest('.card'),furyText=card.querySelector('#furyToggle')?.textContent||'Fureur des petits +3',blessedText=card.querySelector('#blessedToggle')?.textContent||'Frappes bénies +1d8 (disponible)';card.className='card full combat-options-card';card.innerHTML='<h2>Options offensives</h2><div class="options"><button id="furyToggle" class="toggle" onclick="this.classList.toggle(\'on\')">'+furyText+'</button><button id="manualToggle" class="toggle" onclick="this.classList.toggle(\'on\');this.textContent=this.classList.contains(\'on\')?\'Jet manuel : oui\':\'Jet manuel : non\'">Jet manuel : non</button><span id="blessedToggle" class="on" hidden></span><span class="pill good blessed-auto">Frappes bénies automatique '+(blessedText.includes('utilisée')?'· utilisée ce tour':'· disponible')+'</span></div>'};
+ new MutationObserver(reshape).observe(grid,{childList:true,subtree:true});reshape();
+ if(!document.getElementById('newCombatTurn')){const next=bar.querySelector('.next');const b=document.createElement('button');b.type='button';b.id='newCombatTurn';b.className='restbtn new-combat-turn';b.textContent='Nouveau combat';b.setAttribute('onclick','newCombat()');next?.after(b)}
+ if(!document.getElementById('ribbonUndo')){const b=document.createElement('button');b.type='button';b.id='ribbonUndo';b.className='ribbon-undo';b.textContent='↶ Annuler';b.setAttribute('onclick','undo()');ribbon.appendChild(b)}
+ return true};
+if(!mountPikCombatControls()){const pccObserver=new MutationObserver(()=>{if(mountPikCombatControls())pccObserver.disconnect()});pccObserver.observe(document.documentElement,{childList:true,subtree:true})}
+
 const fav=document.createElement('link');fav.rel='icon';fav.type='image/svg+xml';fav.href='data:image/svg+xml,'+encodeURIComponent(svg);document.head.appendChild(fav);
 })();
