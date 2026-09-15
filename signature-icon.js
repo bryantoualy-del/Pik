@@ -31,17 +31,32 @@ const style=document.createElement('style');style.textContent=`
   .vitals .hpbox{grid-template-columns:repeat(3,minmax(0,1fr))!important}
   .vitals>.stat{padding:5px!important}
 }
-@media(min-width:768px) and (max-width:1366px){
-  .top{grid-template-columns:minmax(245px,.8fr) minmax(0,2.2fr)!important;gap:6px!important}
-  .identity{padding:8px 92px 8px 11px!important}
-  .identity h1{font-size:clamp(1.45rem,2.25vw,1.95rem)!important}
-  .identity p{font-size:.72rem!important;white-space:nowrap!important}
-  .signature-icon{width:64px;height:64px;right:10px;top:50%}
-  .vitals{grid-template-columns:minmax(235px,1.68fr) repeat(6,minmax(52px,.58fr))!important;padding:5px!important;gap:4px!important}
+@media(min-width:768px) and (max-width:1024px){
+  .top{display:grid!important;grid-template-columns:1fr!important;gap:5px!important}
+  .identity{padding:7px 82px 7px 11px!important;min-height:62px!important}
+  .identity h1{font-size:1.55rem!important;margin:.04rem 0 .12rem!important}
+  .identity p{font-size:.7rem!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .identity .tag{margin-top:2px!important;padding:1px 6px!important;font-size:.62rem!important}
+  .signature-icon{width:54px;height:54px;right:12px;top:50%}
+  .vitals{grid-template-columns:minmax(220px,1.55fr) repeat(6,minmax(48px,.55fr))!important;padding:4px!important;gap:3px!important}
+  .vitals>.stat{padding:4px 5px!important}
+  .vitals>.stat b{font-size:.9rem!important}
+  .vitals>.stat small{font-size:.46rem!important}
+  .vitals>.hpstat{grid-template-columns:auto minmax(132px,1fr) auto!important;column-gap:4px!important}
+  .vitals .num{height:27px!important;min-height:27px!important;padding:3px 4px!important;font-size:.76rem!important}
+  .vitals .mini{height:27px!important;min-height:27px!important;padding:3px 4px!important;font-size:.6rem!important}
+}
+@media(min-width:1025px) and (max-width:1366px){
+  .top{grid-template-columns:minmax(255px,.84fr) minmax(0,2.16fr)!important;gap:6px!important}
+  .identity{padding:8px 90px 8px 11px!important}
+  .identity h1{font-size:clamp(1.45rem,2vw,1.9rem)!important}
+  .identity p{font-size:.7rem!important;white-space:nowrap!important}
+  .signature-icon{width:62px;height:62px;right:10px;top:50%}
+  .vitals{grid-template-columns:minmax(230px,1.6fr) repeat(6,minmax(50px,.56fr))!important;padding:5px!important;gap:4px!important}
   .vitals>.stat{padding:4px 5px!important}
   .vitals>.stat b{font-size:.92rem!important}
   .vitals>.stat small{font-size:.48rem!important}
-  .vitals>.hpstat{grid-template-columns:auto minmax(138px,1fr) auto!important;column-gap:5px!important}
+  .vitals>.hpstat{grid-template-columns:auto minmax(136px,1fr) auto!important;column-gap:5px!important}
   .vitals .num{height:28px!important;min-height:28px!important;padding:3px 4px!important;font-size:.78rem!important}
   .vitals .mini{height:28px!important;min-height:28px!important;padding:3px 5px!important;font-size:.62rem!important}
 }
