@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#07140f">
 <title>Pik Sang Froid — Compagnon de combat</title>
 <style>
-html,body{margin:0;min-height:100%;background:#07100c;color:#f4f7f2;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.boot{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 20% 20%,#1f6f4b55,transparent 35rem),radial-gradient(circle at 90% 80%,#8f26313a,transparent 30rem),#07100c}.boot div{text-align:center}.cross{font-size:64px;color:#ed5c61;text-shadow:0 0 28px #ed5c6166}.boot p{color:#aebbb3}
+html,body{margin:0;min-height:100%;background:#07100c;color:#f4f7f2;font-family:system-ui,-apple-system,Segoe UI,sans-serif}.boot{min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 20% 20%,#1f6f4b55,transparent 35rem),radial-gradient(circle at 90% 80%,#8f26313a 0,transparent 30rem),#07100c}.boot div{text-align:center}.cross{font-size:64px;color:#ed5c61;text-shadow:0 0 28px #ed5c6166}.boot p{color:#aebbb3}
 </style>
 </head>
 <body>
@@ -17,7 +17,8 @@ html,body{margin:0;min-height:100%;background:#07100c;color:#f4f7f2;font-family:
     const base='https://raw.githubusercontent.com/bryantoualy-del/Pik/9b36eebfd2cb215293fb1a067b0ea80e0d7dae82/index.html';
     let html=await (await fetch(base,{cache:'no-store'})).text();
     html=html.replace('<meta name="theme-color" content="#0d1110">','<meta name="theme-color" content="#07140f">');
-    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=2"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=3"><link rel="stylesheet" href="medical-fx.css?v=3"></head>');
+    html=html.replace('</body>','<script src="medical-fx.js?v=3"><\/script></body>');
     document.open();document.write(html);document.close();
   }catch(e){
     document.body.innerHTML='<div class="boot"><div><div class="cross">✚</div><h1>Pik Sang Froid</h1><p>Impossible de charger le compagnon. Recharge la page.</p></div></div>';
