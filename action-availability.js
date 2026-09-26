@@ -93,9 +93,38 @@
     }
   }
 
+
+  // Arme spirituelle : l'emplacement est payé uniquement à l'invocation.
+  // Tant que l'arme est active, tout nouvel usage via la liste des sorts
+  // déclenche seulement sa frappe (action bonus), sans nouveau slot.
+  const originalCastSpell=window.castSpell;
+  if(typeof originalCastSpell==='function'&&!window.__pikSpiritualWeaponCastPatched){
+    window.castSpell=function(id){
+      if(id==='spiritualWeapon' && typeof S!=='undefined' && S.spiritualWeapon){
+        return window.castSpiritualWeapon(S.spiritualWeapon.slot,true);
+      }
+      return originalCastSpell.apply(this,arguments);
+    };
+    window.__pikSpiritualWeaponCastPatched=true;
+  }
+
+  function syncSpiritualWeaponButtons(){
+    const active=typeof S!=='undefined' && !!S.spiritualWeapon;
+    document.querySelectorAll('button[onclick*="castSpell(\\'spiritualWeapon\\')"],button[onclick*="castSpell(&quot;spiritualWeapon&quot;)"],button[onclick*="castSpell(\'spiritualWeapon\')"]').forEach(btn=>{
+      if(active){
+        btn.textContent='Frapper avec l’arme active';
+        btn.title='Action bonus uniquement — aucun emplacement dépensé';
+      }else if(btn.closest('.spell')){
+        btn.textContent='Lancer';
+        if(!btn.classList.contains('eco-unavailable')) btn.removeAttribute('title');
+      }
+    });
+  }
+
   function sync(){
     ensureStyle();
     syncTurnbar();
+    syncSpiritualWeaponButtons();
     document.querySelectorAll('main button.primary, main button.ability').forEach(btn=>setEcoState(btn,getKind(btn)));
   }
 
