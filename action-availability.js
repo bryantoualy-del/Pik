@@ -44,27 +44,21 @@
   function getKind(btn){
     if(!btn || btn.closest('.turnbar,.nav,.modal-wrap,.hp-actions,.journal-tools')) return null;
     const raw=btn.getAttribute('onclick')||'';
-
     if(ACTION_FNS.some(fn=>raw.includes(fn+'('))) return 'action';
     if(BONUS_FNS.some(fn=>raw.includes(fn+'('))) return 'bonus';
-
     const cast=raw.match(/castSpell\(['"]([^'"]+)['"]\)/);
     if(cast) return spellKind(cast[1]);
-
     const meta=btn.closest('.card,.item,.spell')?.querySelector('.meta')?.textContent||'';
     if(/^\s*Action bonus\b/i.test(meta) || /^\s*Bonus\b/i.test(meta)) return 'bonus';
     if(/^\s*Action\b/i.test(meta)) return 'action';
-
     return null;
   }
 
   function setEcoState(btn,kind){
     const blocked=!!kind && typeof S!=='undefined' && S.economy && S.economy[kind]===false;
     const ours=btn.dataset.ecoDisabled==='1';
-
     btn.dataset.ecoKind=kind||'';
     btn.classList.toggle('eco-unavailable',blocked);
-
     if(blocked){
       if(!btn.disabled || ours){
         btn.disabled=true;
@@ -93,10 +87,6 @@
     }
   }
 
-
-  // Arme spirituelle : l'emplacement est payé uniquement à l'invocation.
-  // Tant que l'arme est active, tout nouvel usage via la liste des sorts
-  // déclenche seulement sa frappe (action bonus), sans nouveau slot.
   const originalCastSpell=window.castSpell;
   if(typeof originalCastSpell==='function'&&!window.__pikSpiritualWeaponCastPatched){
     window.castSpell=function(id){
@@ -110,7 +100,9 @@
 
   function syncSpiritualWeaponButtons(){
     const active=typeof S!=='undefined' && !!S.spiritualWeapon;
-    document.querySelectorAll('button[onclick*="castSpell(\\'spiritualWeapon\\')"],button[onclick*="castSpell(&quot;spiritualWeapon&quot;)"],button[onclick*="castSpell(\'spiritualWeapon\')"]').forEach(btn=>{
+    document.querySelectorAll('button[onclick*="spiritualWeapon"]').forEach(btn=>{
+      const raw=btn.getAttribute('onclick')||'';
+      if(!raw.includes('castSpell(')) return;
       if(active){
         btn.textContent='Frapper avec l’arme active';
         btn.title='Action bonus uniquement — aucun emplacement dépensé';
@@ -137,9 +129,7 @@
 
   const mo=new MutationObserver(scheduleSync);
   mo.observe(document.body,{subtree:true,childList:true});
-
   document.addEventListener('click',()=>setTimeout(scheduleSync,0),true);
   window.addEventListener('pageshow',scheduleSync);
-
   sync();
 })();
