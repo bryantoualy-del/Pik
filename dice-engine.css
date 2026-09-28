@@ -1,35 +1,36 @@
-/* Pik Dice Cinematic v1 — BG3-inspired, no copied assets */
-#pikDiceOverlay{position:fixed;inset:0;z-index:9999;display:none;place-items:center;background:radial-gradient(circle at 50% 46%,rgba(64,153,105,.18),transparent 25rem),rgba(3,8,6,.82);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);overflow:hidden}
-#pikDiceOverlay.open{display:grid;animation:pikDiceFadeIn .16s ease-out}
-.pik-dice-scene{position:relative;width:min(92vw,680px);height:min(78vh,620px);display:grid;place-items:center;perspective:900px;touch-action:manipulation}
-.pik-dice-title{position:absolute;top:8%;left:0;right:0;text-align:center;text-transform:uppercase;letter-spacing:.18em;font-weight:900;font-size:clamp(.72rem,2vw,.9rem);color:#dbe9df;text-shadow:0 2px 18px #000}
-.pik-dice-title small{display:block;margin-top:7px;letter-spacing:.08em;text-transform:none;color:#8eb39e;font-weight:700}
-.pik-dice-table{position:absolute;inset:23% 8% 16%;border-radius:50%;background:radial-gradient(ellipse at center,rgba(30,66,48,.86),rgba(7,17,12,.94) 58%,rgba(0,0,0,.1) 70%);transform:rotateX(63deg);box-shadow:0 0 80px #36c97915,inset 0 0 70px #000}
-.pik-die-wrap{position:relative;width:180px;height:180px;display:grid;place-items:center;transform-style:preserve-3d;filter:drop-shadow(0 26px 18px #000b)}
-.pik-die-wrap.dual{position:absolute}
-.pik-die-wrap.dual.first{transform:translateX(-105px) scale(.86)}
-.pik-die-wrap.dual.second{transform:translateX(105px) scale(.86)}
-.pik-die{position:relative;width:154px;height:154px;display:grid;place-items:center;clip-path:polygon(50% 0%,94% 25%,94% 75%,50% 100%,6% 75%,6% 25%);background:conic-gradient(from 30deg,#1f6f4b,#0d2a1d,#4aa672,#102b20,#7ed4a5,#173f2b,#1f6f4b);border:1px solid #9ff0bf;box-shadow:inset 0 0 0 2px #ffffff18,inset 0 -24px 42px #0009,0 0 32px #4fd28a36;transform-style:preserve-3d}
-.pik-die:before,.pik-die:after{content:"";position:absolute;inset:13%;clip-path:polygon(50% 0,100% 100%,0 100%);border:1px solid rgba(220,255,234,.28);background:linear-gradient(145deg,rgba(255,255,255,.09),rgba(255,255,255,0));transform:rotate(30deg)}
-.pik-die:after{transform:rotate(210deg);opacity:.55}
-.pik-die-number{position:relative;z-index:3;width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font:900 2.65rem Georgia,serif;color:#f7fff9;background:radial-gradient(circle,#173b29 0,#09140f 73%);border:1px solid #8edcaf;box-shadow:0 0 22px #74e7a95b,inset 0 0 14px #000;text-shadow:0 2px 5px #000}
-.pik-die-wrap.rolling .pik-die{animation:pikDiceRoll 1.25s cubic-bezier(.15,.67,.2,1)}
-.pik-die-wrap.rolling{animation:pikDiceDrop 1.25s cubic-bezier(.16,.78,.25,1)}
-.pik-die-wrap.selected .pik-die{box-shadow:inset 0 0 0 2px #ffffff24,inset 0 -24px 42px #0008,0 0 55px #68e8a080;animation:pikDiceChosen .38s ease-out both}
-.pik-die-wrap.discarded{opacity:.28;filter:grayscale(.6) blur(.4px);transform:scale(.78)}
-.pik-die-wrap.nat20 .pik-die{background:conic-gradient(from 30deg,#fff4c7,#bd8d2e,#f8e8a1,#7c5416,#fff7cf,#bd8d2e);border-color:#fff5bb;box-shadow:0 0 75px #ffe59a99,inset 0 0 30px #fff3}
-.pik-die-wrap.nat1 .pik-die{background:conic-gradient(from 30deg,#6f2028,#25090d,#a9323d,#17070a,#6f2028);border-color:#ff7d86;box-shadow:0 0 62px #ef405566,inset 0 0 30px #0008}
-.pik-dice-result{position:absolute;bottom:6%;left:8%;right:8%;text-align:center;opacity:0;transform:translateY(12px);transition:.24s ease}
+/* Pik Dice Engine V2 — cinematic Three.js d20 */
+#pikDiceOverlay{position:fixed;inset:0;z-index:9999;display:none;background:radial-gradient(circle at 50% 45%,rgba(45,135,88,.22),transparent 34rem),rgba(2,7,5,.88);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);overflow:hidden}
+#pikDiceOverlay.open{display:block;animation:pikV2Fade .18s ease-out}
+.pik-dice-scene{position:relative;width:100%;height:100%;min-height:100dvh;overflow:hidden;touch-action:manipulation}
+.pik-dice-canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pik-dice-vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 48%,transparent 18%,rgba(0,0,0,.18) 50%,rgba(0,0,0,.68) 100%)}
+.pik-dice-title{position:absolute;top:max(28px,calc(env(safe-area-inset-top) + 18px));left:12%;right:12%;text-align:center;text-transform:uppercase;letter-spacing:.2em;font-weight:950;font-size:clamp(.72rem,2vw,.92rem);color:#e8f3eb;text-shadow:0 3px 24px #000;pointer-events:none}
+.pik-dice-title small{display:block;margin-top:8px;letter-spacing:.08em;text-transform:none;color:#83b99a;font-weight:800}
+.pik-dice-status{position:absolute;top:17%;left:10%;right:10%;text-align:center;color:#7ba88e;font-weight:800;letter-spacing:.12em;text-transform:uppercase;font-size:.7rem;opacity:.9;pointer-events:none}
+.pik-dice-result{position:absolute;left:7%;right:7%;bottom:max(34px,calc(env(safe-area-inset-bottom) + 24px));text-align:center;opacity:0;transform:translateY(16px) scale(.97);transition:.28s cubic-bezier(.2,.78,.25,1);pointer-events:none}
 .pik-dice-result.show{opacity:1;transform:none}
-.pik-dice-total{font:900 clamp(2.25rem,8vw,4rem) Georgia,serif;color:#fff;text-shadow:0 0 26px #62dc9b66}
-.pik-dice-detail{margin-top:4px;color:#c9d8cf;font-size:.92rem}
-.pik-dice-hint{margin-top:10px;color:#789889;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}
-.pik-dice-ring{position:absolute;width:260px;height:260px;border-radius:50%;border:1px solid #70dc9c40;box-shadow:0 0 42px #4fd28a20;opacity:0}
-.open .pik-dice-ring{animation:pikDiceRing 1.55s ease-out .25s}
-@keyframes pikDiceFadeIn{from{opacity:0}to{opacity:1}}
-@keyframes pikDiceDrop{0%{transform:translate3d(0,-280px,0) scale(.48)}58%{transform:translate3d(22px,22px,0) scale(1.08)}76%{transform:translate3d(-9px,-10px,0) scale(.98)}100%{transform:none}}
-@keyframes pikDiceRoll{0%{transform:rotate(-30deg) scale(.75)}18%{transform:rotate(145deg) scale(.9)}46%{transform:rotate(410deg) scale(1.08)}72%{transform:rotate(635deg) scale(.98)}100%{transform:rotate(720deg) scale(1)}}
-@keyframes pikDiceChosen{0%{transform:scale(.94)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
-@keyframes pikDiceRing{0%{opacity:.7;transform:scale(.45)}100%{opacity:0;transform:scale(1.8)}}
-@media(max-width:560px){.pik-die-wrap{width:145px;height:145px}.pik-die{width:132px;height:132px}.pik-die-wrap.dual.first{transform:translateX(-76px) scale(.78)}.pik-die-wrap.dual.second{transform:translateX(76px) scale(.78)}.pik-die-number{width:62px;height:62px;font-size:2.25rem}.pik-dice-table{inset:25% 2% 19%}}
-@media(prefers-reduced-motion:reduce){.pik-die-wrap.rolling,.pik-die-wrap.rolling .pik-die,.open .pik-dice-ring{animation-duration:.01ms!important}.pik-dice-result{transition:none}}
+.pik-dice-verdict{font-size:.72rem;font-weight:950;letter-spacing:.18em;text-transform:uppercase;color:#89b99d;margin-bottom:4px}
+.pik-dice-total{font:950 clamp(2.7rem,10vw,5.2rem) Georgia,serif;color:#fff;text-shadow:0 0 36px #5ee59d70,0 4px 18px #000}
+.pik-dice-detail{margin-top:2px;color:#d3e0d8;font-size:clamp(.82rem,2vw,1rem);font-weight:700}
+.pik-dice-hint{margin-top:10px;color:#71907f;font-size:.67rem;letter-spacing:.13em;text-transform:uppercase}
+.pik-dice-queue{position:absolute;right:max(14px,env(safe-area-inset-right));top:max(14px,env(safe-area-inset-top));border:1px solid #315746;background:#0a1710dd;color:#a9c8b5;border-radius:999px;padding:6px 9px;font-size:.68rem;font-weight:900;opacity:0;transition:.2s}
+.pik-dice-queue.show{opacity:1}
+#pikDiceOverlay.nat20{background:radial-gradient(circle at 50% 46%,rgba(240,202,104,.26),transparent 35rem),rgba(3,8,5,.9)}
+#pikDiceOverlay.nat20 .pik-dice-verdict{color:#ffe5a0}
+#pikDiceOverlay.nat20 .pik-dice-total{text-shadow:0 0 48px #ffd66caa,0 4px 18px #000;color:#fff8dd}
+#pikDiceOverlay.nat1{background:radial-gradient(circle at 50% 46%,rgba(172,43,55,.25),transparent 35rem),rgba(8,2,3,.91)}
+#pikDiceOverlay.nat1 .pik-dice-verdict{color:#ff969f}
+#pikDiceOverlay.nat1 .pik-dice-total{text-shadow:0 0 44px #ef4e5f88,0 4px 18px #000;color:#ffe8ea}
+#pikDiceOverlay.impact .pik-dice-scene{animation:pikV2Impact .16s ease-out}
+#pikDiceOverlay.nat20.reveal .pik-dice-scene:after,#pikDiceOverlay.nat1.reveal .pik-dice-scene:after{content:"";position:absolute;inset:-20%;pointer-events:none;opacity:0;border-radius:50%;animation:pikV2Burst .75s ease-out}
+#pikDiceOverlay.nat20.reveal .pik-dice-scene:after{background:radial-gradient(circle,rgba(255,233,160,.34),transparent 45%)}
+#pikDiceOverlay.nat1.reveal .pik-dice-scene:after{background:radial-gradient(circle,rgba(239,78,95,.25),transparent 42%)}
+@keyframes pikV2Fade{from{opacity:0}to{opacity:1}}
+@keyframes pikV2Impact{0%{transform:translate(0,0)}35%{transform:translate(1px,2px)}70%{transform:translate(-1px,-1px)}100%{transform:none}}
+@keyframes pikV2Burst{0%{opacity:.8;transform:scale(.45)}100%{opacity:0;transform:scale(1.2)}}
+.social-dice-settings{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;margin-top:7px}
+.social-dice-settings button{min-height:30px!important;padding:4px 8px!important;font-size:.69rem!important}
+.social-dice-settings .dice-setting-on{border-color:#4fd28a!important;background:#123b27!important;box-shadow:inset 0 0 14px #4fd28a22!important}
+.social-dice-settings .dice-setting-muted{opacity:.58}
+@media(max-width:767px){.social-dice-settings{justify-content:flex-start}.pik-dice-status{top:15%}.pik-dice-title{left:5%;right:5%}}
+@media(prefers-reduced-motion:reduce){#pikDiceOverlay.open,#pikDiceOverlay.impact .pik-dice-scene,#pikDiceOverlay.reveal .pik-dice-scene:after{animation-duration:.01ms!important}.pik-dice-result{transition:none}}
