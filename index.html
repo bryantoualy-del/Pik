@@ -15,17 +15,17 @@ html,body{margin:0;min-height:100%;background:#07100c;color:#f4f7f2;font-family:
 (async()=>{
   try{
     const base='https://raw.githubusercontent.com/bryantoualy-del/Pik/9b36eebfd2cb215293fb1a067b0ea80e0d7dae82/index.html';
-    const [baseRes,socialRes]=await Promise.all([fetch(base,{cache:'no-store'}),fetch('social.js?v=1',{cache:'no-store'})]);
+    const [baseRes,socialRes]=await Promise.all([fetch(base,{cache:'no-store'}),fetch('social.js?v=2',{cache:'no-store'})]);
     let html=await baseRes.text();
     const socialCode=await socialRes.text();
     html=html.replaceAll('Pik Sang Froid','Pik Ekrok').replaceAll('Sang Froid','Ekrok');
     html=html.replace('<meta name="theme-color" content="#0d1110">','<meta name="theme-color" content="#07140f">');
-    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=4"><link rel="stylesheet" href="medical-fx.css?v=3"></head>');
+    html=html.replace('</head>','<link rel="stylesheet" href="medical.css?v=4"><link rel="stylesheet" href="medical-fx.css?v=3"><link rel="stylesheet" href="dice-engine.css?v=1"></head>');
     const bootMarker='renderNav();renderAll();';
     const bootIndex=html.lastIndexOf(bootMarker);
     if(bootIndex<0) throw new Error('Point d’injection Social introuvable');
     html=html.slice(0,bootIndex)+socialCode+'\n'+html.slice(bootIndex);
-    html=html.replace('</body>','<script src="medical-fx.js?v=3"><\/script><script src="signature-icon.js?v=20"><\/script><script src="action-availability.js?v=2"><\/script></body>');
+    html=html.replace('</body>','<script src="medical-fx.js?v=3"><\/script><script src="dice-engine.js?v=1"><\/script><script src="signature-icon.js?v=20"><\/script><script src="action-availability.js?v=2"><\/script></body>');
     document.open();document.write(html);document.close();
   }catch(e){
     document.body.innerHTML='<div class="boot"><div><div class="cross">✚</div><h1>Pik Ekrok</h1><p>Impossible de charger le compagnon. Recharge la page.</p></div></div>';
