@@ -69,8 +69,11 @@
     const total = chosen + bonus;
     const diceText = b === null ? 'd20 ' + a : 'd20 ' + a + ' / ' + b + ' → ' + chosen;
     const detail = diceText + ' ' + fmt(bonus) + ' = ' + total + (mode === 'adv' ? ' · avantage' : mode === 'dis' ? ' · désavantage' : '');
+    if (window.PikDice) {
+      window.PikDice.roll({ label, rolls: b === null ? [a] : [a,b], chosen, total, detail, mode });
+    }
     addJournal('roll', 'Social · ' + label, detail);
-    showResult('Social · ' + label, detail, 'hit');
+    showResult('Social · ' + label, detail, chosen === 20 ? 'crit' : 'hit');
     save();
   };
 
