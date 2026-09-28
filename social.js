@@ -52,7 +52,7 @@
   socialView.innerHTML =
     '<div class="grid"><article class="card full social-shell">' +
       '<div class="social-head"><div><div class="eyebrow">Hors combat</div><h2>Social</h2><div class="meta">Compétences, caractéristiques, jets de sauvegarde et équipement de Pik.</div></div>' +
-      '<div class="social-roll-modes" id="socialRollModes"><button class="ability on" data-social-mode="normal">Normal</button><button class="ability" data-social-mode="adv">Avantage</button><button class="ability" data-social-mode="dis">Désavantage</button></div></div>' +
+      '<div><div class="social-roll-modes" id="socialRollModes"><button class="ability on" data-social-mode="normal">Normal</button><button class="ability" data-social-mode="adv">Avantage</button><button class="ability" data-social-mode="dis">Désavantage</button></div><div class="social-dice-settings" id="socialDiceSettings"><button class="ability" data-dice-speed="cinematic">Dés · Ciné</button><button class="ability" data-dice-speed="fast">Rapide</button><button class="ability" data-dice-speed="off">Off</button><button class="ability" data-dice-toggle="sound">Son</button><button class="ability" data-dice-toggle="haptics">Vibration</button></div></div></div>' +
       '<div class="social-tabs" id="socialTabs"><button class="ability on" data-social-tab="skills">Compétences</button><button class="ability" data-social-tab="abilities">Carac. &amp; JdS</button><button class="ability" data-social-tab="inventory">Inventaire</button></div>' +
       '<div id="socialContent"></div>' +
     '</article></div>';
@@ -133,9 +133,23 @@
     mode = btn.dataset.socialMode;
     socialView.querySelectorAll('[data-social-mode]').forEach(b => b.classList.toggle('on', b.dataset.socialMode === mode));
   });
+  const DICE_KEY='pikDiceSettingsV2';
+  const readDice=()=>{try{return {speed:'cinematic',sound:true,haptics:true,...JSON.parse(localStorage.getItem(DICE_KEY)||'{}')}}catch(e){return {speed:'cinematic',sound:true,haptics:true}}};
+  const writeDice=s=>{localStorage.setItem(DICE_KEY,JSON.stringify(s));if(window.PikDice)window.PikDice.setSettings(s);paintDice()};
+  function paintDice(){
+    const s=readDice();
+    socialView.querySelectorAll('[data-dice-speed]').forEach(b=>b.classList.toggle('dice-setting-on',b.dataset.diceSpeed===s.speed));
+    socialView.querySelectorAll('[data-dice-toggle]').forEach(b=>{const on=!!s[b.dataset.diceToggle];b.classList.toggle('dice-setting-on',on);b.classList.toggle('dice-setting-muted',!on)});
+  }
+  socialView.querySelectorAll('[data-dice-speed]').forEach(btn=>btn.onclick=()=>writeDice({...readDice(),speed:btn.dataset.diceSpeed}));
+  socialView.querySelectorAll('[data-dice-toggle]').forEach(btn=>btn.onclick=()=>{const s=readDice(),k=btn.dataset.diceToggle;writeDice({...s,[k]:!s[k]})});
+  window.addEventListener('pikdice:settings',paintDice);
+  window.addEventListener('pikdice:ready',paintDice);
+
   socialView.querySelectorAll('[data-social-tab]').forEach(btn => btn.onclick = () => {
     tab = btn.dataset.socialTab;
     renderTab();
   });
+  paintDice();
   renderTab();
 })();
