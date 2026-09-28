@@ -163,7 +163,7 @@ async function animateRoll(dice,duration){
           const s=clamp01((t-.72)/.28),k=1-Math.pow(1-s,3);
           g.position.y=endY+Math.sin((1-s)*Math.PI*2)*.08*(1-s);
           g.position.x+=(g.userData.endX-g.position.x)*.14;
-          THREE.Quaternion.slerp(startQ[i],g.userData.targetQ,g.quaternion,k);
+          g.quaternion.copy(startQ[i]).slerp(g.userData.targetQ,k);
         }
       });
       renderer.render(scene,camera);
