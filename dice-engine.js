@@ -65,7 +65,7 @@ function resizeRenderer(){
   renderer.setSize(Math.max(1,rect.width),Math.max(1,rect.height),false);
   camera.aspect=Math.max(1,rect.width)/Math.max(1,rect.height);
   camera.updateProjectionMatrix();
-  renderer.render(scene,camera);
+  renderScene();
 }
 
 function makeNumberTexture(n){
@@ -92,10 +92,13 @@ function createD20(value,index,count){
     const normal=b.clone().sub(a).cross(c.clone().sub(a)).normalize();
     if(center.dot(normal)<0) normal.negate();
     faces.push({normal:center.clone().normalize(),n:face});
-    const label=new THREE.Mesh(new THREE.PlaneGeometry(.48,.48),new THREE.MeshBasicMaterial({map:makeNumberTexture(face),transparent:true,depthWrite:false,side:THREE.DoubleSide}));
-    label.position.copy(center.clone().normalize().multiplyScalar(1.012));
+    const labelMat=new THREE.MeshBasicMaterial({map:makeNumberTexture(face),transparent:true,opacity:0,depthWrite:false,side:THREE.DoubleSide});
+    const label=new THREE.Mesh(new THREE.PlaneGeometry(.40,.40),labelMat);
+    label.position.copy(center.clone().normalize().multiplyScalar(1.01));
     label.quaternion.setFromUnitVectors(new THREE.Vector3(0,0,1),normal);
-    label.renderOrder=3;group.add(label);
+    label.renderOrder=3;
+    label.userData.faceNormal=normal.clone();
+    group.add(label);
   }
   const targetFace=faces.find(f=>f.n===value)||faces[0];
   const targetQ=new THREE.Quaternion().setFromUnitVectors(targetFace.normal.clone(),new THREE.Vector3(0,.18,1).normalize());
@@ -121,8 +124,29 @@ function clearDice(){
   currentDice=[];
 }
 
+const preferredReadNormal=new THREE.Vector3(0,.18,1).normalize();
+
+function updateFaceLabelVisibility(group){
+  if(!group?.userData?.labels) return;
+  group.userData.labels.forEach(label=>{
+    const worldNormal=label.userData.faceNormal.clone().applyQuaternion(group.quaternion).normalize();
+    const dot=worldNormal.dot(preferredReadNormal);
+    let opacity=clamp01((dot-.78)/.16);
+    opacity=opacity*opacity;
+    label.material.opacity=opacity;
+    const s=.84+opacity*.24;
+    label.scale.setScalar(s);
+  });
+}
+
+function renderScene(){
+  if(!renderer||!scene||!camera) return;
+  currentDice.forEach(updateFaceLabelVisibility);
+  renderer.render(scene,camera);
+}
+
 function setGroupOpacity(g,opacity){
-  g.traverse(o=>{if(o.material){const arr=Array.isArray(o.material)?o.material:[o.material];arr.forEach(m=>{m.transparent=true;m.opacity=opacity})}});
+  g.traverse(o=>{if(o.material){const arr=Array.isArray(o.material)?o.material:[o.material];arr.forEach(m=>{m.transparent=true;m.opacity=Math.min(m.opacity,opacity)})}});
 }
 
 function vibrate(pattern){if(settings.haptics&&navigator.vibrate)navigator.vibrate(pattern)}
@@ -140,9 +164,9 @@ function tone(kind){
   }catch(e){}
 }
 
-function frameLoop(){if(!renderer||!scene||!camera)return;renderer.render(scene,camera);clockId=requestAnimationFrame(frameLoop)}
+function frameLoop(){if(!renderer||!scene||!camera)return;renderScene();clockId=requestAnimationFrame(frameLoop)}
 function startLoop(){cancelAnimationFrame(clockId);frameLoop()}
-function stopLoop(){cancelAnimationFrame(clockId);clockId=0;renderer?.render(scene,camera)}
+function stopLoop(){cancelAnimationFrame(clockId);clockId=0;renderScene()}
 
 async function animateRoll(dice,duration){
   const start=performance.now();
@@ -152,21 +176,21 @@ async function animateRoll(dice,duration){
   return new Promise(resolve=>{
     function step(now){
       const t=clamp01((now-start)/duration);
-      const fall=easeOut(clamp01(t/0.72));
+      const fall=easeOut(clamp01(t/0.78));
       dice.forEach((g,i)=>{
-        if(t<.72){
+        if(t<.78){
           g.position.y=4.4+i*.35+(endY-(4.4+i*.35))*fall;
-          g.position.x=g.userData.endX+Math.sin(t*16+i)*(.34*(1-t));
-          g.rotation.x+=.17+i*.015;g.rotation.y+=.21-i*.018;g.rotation.z+=.12;
+          g.position.x=g.userData.endX+Math.sin(t*14+i*.7)*(.30*(1-t));
+          g.rotation.x+=.145+i*.012;g.rotation.y+=.185-i*.014;g.rotation.z+=.095;
         }else{
-          if(!settled){settled=true;settleStart=t;dice.forEach((x,j)=>startQ[j]=x.quaternion.clone());tone('impact');vibrate(20);overlay.classList.add('impact');setTimeout(()=>overlay?.classList.remove('impact'),170)}
-          const s=clamp01((t-.72)/.28),k=1-Math.pow(1-s,3);
-          g.position.y=endY+Math.sin((1-s)*Math.PI*2)*.08*(1-s);
-          g.position.x+=(g.userData.endX-g.position.x)*.14;
+          if(!settled){settled=true;settleStart=t;dice.forEach((x,j)=>startQ[j]=x.quaternion.clone());tone('impact');vibrate(20);overlay.classList.add('impact');setTimeout(()=>overlay?.classList.remove('impact'),190)}
+          const s=clamp01((t-.78)/.22),k=1-Math.pow(1-s,3);
+          g.position.y=endY+Math.sin((1-s)*Math.PI*1.6)*.06*(1-s);
+          g.position.x+=(g.userData.endX-g.position.x)*.11;
           g.quaternion.copy(startQ[i]).slerp(g.userData.targetQ,k);
         }
       });
-      renderer.render(scene,camera);
+      renderScene();
       if(t<1)requestAnimationFrame(step);else resolve();
     }
     requestAnimationFrame(step);
@@ -179,7 +203,7 @@ async function emphasize(dice,chosen){
     if(i===selectedIndex){g.scale.setScalar(1.08);g.position.x+=(0-g.position.x)*.35}
     else{setGroupOpacity(g,.18);g.scale.setScalar(.72);g.position.x*=1.28}
   });
-  renderer.render(scene,camera);await sleep(220);
+  renderScene();await sleep(260);
 }
 
 function updateQueueBadge(){
@@ -214,9 +238,13 @@ async function perform(opts,resolve){
   if(chosen===20)o.classList.add('nat20');if(chosen===1)o.classList.add('nat1');
   o.classList.add('open');resizeRenderer();startLoop();vibrate(14);tone('start');
   currentDice=rolls.map((v,i)=>createD20(v,i,rolls.length));
-  const duration=settings.speed==='fast'?520:1320;
+  const duration=settings.speed==='fast'?680:1620;
   await animateRoll(currentDice,duration);
+  o.querySelector('.pik-dice-status').textContent='Le dé se stabilise…';
+  await sleep(settings.speed==='fast'?120:280);
   await emphasize(currentDice,chosen);
+  o.querySelector('.pik-dice-status').textContent=rolls.length===2?'Dé retenu : '+chosen:'Face obtenue : '+chosen;
+  await sleep(settings.speed==='fast'?90:190);
   o.querySelector('.pik-dice-verdict').textContent=chosen===20?'20 naturel · critique':chosen===1?'1 naturel · échec critique':'Résultat du jet';
   o.querySelector('.pik-dice-total').textContent=opts.total!=null?String(opts.total):String(chosen);
   o.querySelector('.pik-dice-detail').textContent=opts.detail||('d20 '+chosen);
@@ -224,10 +252,9 @@ async function perform(opts,resolve){
   o.classList.add('reveal');
   if(chosen===20){tone('crit');vibrate([22,30,44])}
   else if(chosen===1){vibrate([36,24,36])}
-  o.querySelector('.pik-dice-status').textContent=rolls.length===2?'Dé retenu : '+chosen:'Face obtenue : '+chosen;
   o.dataset.dismissable='1';
   updateQueueBadge();
-  if(queue.length){await sleep(settings.speed==='fast'?450:850);if(o.dataset.dismissable==='1')finishCurrent()}
+  if(queue.length){await sleep(settings.speed==='fast'?520:980);if(o.dataset.dismissable==='1')finishCurrent()}
 }
 
 function pump(){
@@ -238,5 +265,5 @@ function roll(opts={}){return new Promise(resolve=>{queue.push({opts:{...opts},r
 function close(){if(overlay?.dataset.dismissable==='1')finishCurrent()}
 function cancelAll(){queue.splice(0).forEach(j=>j.resolve());updateQueueBadge();if(busy)finishCurrent()}
 
-window.PikDice={roll,close,cancelAll,getSettings,setSettings,version:'2.0.0',source:'social-only'};
-window.dispatchEvent(new CustomEvent('pikdice:ready',{detail:{version:'2.0.0'}}));
+window.PikDice={roll,close,cancelAll,getSettings,setSettings,version:'2.1.0',source:'social-only'};
+window.dispatchEvent(new CustomEvent('pikdice:ready',{detail:{version:'2.1.0'}}));
